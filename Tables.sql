@@ -1,5 +1,5 @@
 DROP TABLE Grades;
-Grades (course_id , student_id , semester , year , grade )
+--Grades (course_id , student_id , semester , year , grade )
 
 CREATE TABLE Grades(
 	course_id text,
