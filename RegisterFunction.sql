@@ -18,6 +18,7 @@ DECLARE count_rows integer;
 		count_total_prerequisites integer;
 		credits real;
 		this_course_credits real;
+		max_ticket_id integer default 0;
 		
 BEGIN
 	--------------------------------------------------------------------
@@ -70,8 +71,20 @@ BEGIN
 	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed
 		THEN RETURN 0;
 	ELSIF credits + this_course_credits > 5
-			-- RAISE TICKET
-			THEN RETURN 0;
+			THEN
+			
+			SELECT MAX(tt.ticket_id) FROM TicketTable as tt 
+			INTO max_ticket_id;
+			INSERT INTO TicketTable VALUES(
+				max_ticket_id + 1,
+				student_id_,
+				instructor_id, -- yet not found
+				semester_,
+				year_,
+				course_id_,
+				'Pending'
+			);
+			RETURN 0;
 
 	END IF;
 	--------------------------------------------------------------------
