@@ -45,3 +45,14 @@ CREATE TABLE CourseCatalogue(
 	prerequisite text -- course_id
 	
 );
+
+
+CREATE TABLE TicketTable(
+	ticket_id integer PRIMARY KEY,
+	student_id integer,
+	instructor_id integer,
+	semester integer,
+	year integer,
+	course_id integer,
+	status text -- 'Accepted' , 'Pending' , 'Rejected' 
+);
