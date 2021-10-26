@@ -14,20 +14,20 @@ LANGUAGE plpgsql
 AS $$
 
 DECLARE count_rows integer;
-		count_prerequisites_passed integer;
-		count_total_prerequisites integer;
-		credits real;
-		this_course_credits real;
-		max_ticket_id integer default 0;
+	count_prerequisites_passed integer;
+	count_total_prerequisites integer;
+	credits real;
+	this_course_credits real;
+	max_ticket_id integer default 0;
 		
 BEGIN
 	--------------------------------------------------------------------
-		SELECT cc.C FROM CourseCatalogue as cc
-		WHERE cc.course_id = course_id_
-		INTO this_course_credits;
+	-- find the credits for input course_id
+	SELECT cc.C FROM CourseCatalogue as cc
+	WHERE cc.course_id = course_id_
+	INTO this_course_credits;
 	--------------------------------------------------------------------
 	
-
 	--------------------------------------------------------------------
 	-- check this slot is already there in the StudentRegistration table
 	SELECT COUNT(srt.slot) FROM StudentRegistrationTable AS srt
