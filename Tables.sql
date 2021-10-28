@@ -109,13 +109,16 @@ CREATE TABLE StudentRegistrationTable(
 	
 );
 
+DROP TABLE IF EXISTS TicketTable CASCADE;
 CREATE TABLE TicketTable(
-	ticket_id integer PRIMARY KEY,
+	ticket_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	student_id integer,
 	instructor_id integer,
 	semester integer,
 	year integer,
 	course_id text,
+	section integer,
+	slot_id integer,
 	status text ,-- 'Accepted' , 'Pending' , 'Rejected' 
 	
 	FOREIGN KEY(student_id) 
