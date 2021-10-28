@@ -8,12 +8,13 @@ $$
 
 BEGIN
 	IF NEW.status = 'Accepted' THEN
-		INSERT INTO StudentRegistrationTable VALUES(OLD.student_id ,
-											 OLD,course_id,
-											 OLD.semester,
-											 OLD.year,
-											 OLD.section,
-											 OLD.slot );
+		INSERT INTO StudentRegistrationTable VALUES(
+			 OLD.student_id ,
+			 OLD,course_id,
+			 OLD.semester,
+			 OLD.year,
+			 OLD.section,
+			 OLD.slot );
 	ELSE
 		DELETE FROM TicketTable WHERE id = OLD.id;
 	
