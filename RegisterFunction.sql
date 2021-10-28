@@ -19,6 +19,7 @@ DECLARE
 	count_total_prerequisites integer;
 	credits real;
 	this_course_credits real;
+	instructor_id integer;
 	
 BEGIN
 	--------------------------------------------------------------------
@@ -67,17 +68,34 @@ BEGIN
 	INTO count_total_prerequisites;
 	--------------------------------------------------------------------
 	
+	
+	--------------------------------------------------------------------
+	-- find instructor id who is offering thise course this year,semester,section
+	SElECT co.instructor_id FROM
+	CourseOfferings AS co
+	WHERE co.course_id = course_id_
+	and   co.year = year_
+	and   co.semester = semester_
+	and   co.section = section_
+	INTO instructor_id;
+	
+	--------------------------------------------------------------------
+	
 	--------------------------------------------------------------------
 	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed
 		THEN RETURN 0;
-	ELSIF credits + this_course_credits > 18
+	ELSIF credits + this_course_credits > 5
 			THEN
-			INSERT INTO TicketTable VALUES(
+			INSERT INTO 
+			TicketTable(student_id,instructor_id,semester,year,course_id,section,slot_id,status)
+			VALUES(
 				student_id_,
 				instructor_id, -- yet not found
 				semester_,
 				year_,
 				course_id_,
+				section_,
+				slot_id_,
 				'Pending'
 			);
 			RETURN 0;
@@ -99,10 +117,27 @@ $$;
 
 -- TESTCASE
 INSERT INTO Students(student_name , year_joined) VALUES('Sangram',2019);
-INSERT INTO CourseCatalogue VALUES('CS201','DSA',1 , 2 , 3 ,4 ,1);
-INSERT INTO CourseCatalogue VALUES('CS202','DSA',1 , 2 , 3 ,4 ,1,'CS201');
+
+INSERT INTO CourseCatalogue VALUES('CS201','DSA',1 , 2 , 3 ,4 ,3);
+
+INSERT INTO CourseCatalogue VALUES('CS202','DSA',1 , 2 , 3 ,4 ,5);
+
+INSERT INTO Instructors(instructor_name) VALUES('Puneet Goyal');
+
 INSERT INTO TimeTableSlots(week_day , start_time , end_time) VALUES('Sunday', 12 ,1);
 
+INSERT INTO TimeTableSlots(week_day , start_time , end_time) VALUES('Sunday', 1 ,2);
+
+INSERT INTO CourseOfferings(course_id,instructor_id,year,semester,section,slot_id) 
+
+VALUES('CS202',1 , 2019 , 1 ,2 ,2);
 SELECT Register(1 , 'CS201' , 1 , 2019 , 3,1);
 
-select * from studentRegistrationTable
+SELECT Register(1 , 'CS202' , 1 , 2019 , 2,2);
+
+update tickettable
+set status = 'Accepted' where ticket_id = 1
+
+select * from tickettable;
+select * from studentRegistrationtable
+
