@@ -10,7 +10,7 @@ BEGIN
 	IF NEW.status = 'Accepted' THEN
 		INSERT INTO StudentRegistrationTable VALUES(
 			 OLD.student_id ,
-			 OLD,course_id,
+			 OLD.course_id,
 			 OLD.semester,
 			 OLD.year,
 			 OLD.section,
