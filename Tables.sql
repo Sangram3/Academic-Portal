@@ -11,50 +11,50 @@ DROP TABLE IF EXISTS CourseOfferings CASCADE;
 
 CREATE TABLE Students(
 	student_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	student_name text NOT NULL,
-	year_joined integer NOT NULL
+	student_name text ,
+	year_joined integer 
 );
 
 CREATE TABLE Instructors(
 	instructor_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	instructor_name text NOT NULL
+	instructor_name text  
 );
 
 CREATE TABLE FacultyAdvisors(
 	fa_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	fa_name text NOT NULL
+	fa_name text  
 );
 
 CREATE TABLE DeanFA(
 	dean_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	dean_name text NOT NULL
+	dean_name text  
 );
 
 CREATE TABLE TimeTableSlots(
 	slot_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	week_day text NOT NULL,
-	start_time time NOT NULL,
-	end_time time NOT NULL
+	week_day text  ,
+	start_time integer  ,
+	end_time integer 
 );
 
 CREATE TABLE CourseCatalogue(
 	course_id text PRIMARY KEY,
-	course_name text NOT NULL,
+	course_name text  ,
 	L integer,
 	T integer,
 	P integer,
 	S integer,
-	C real NOT NULL,
+	C real  ,
 	prerequisite text -- course_id	
 );
 
 CREATE TABLE CourseOfferings(
-	course_id text NOT NULL,
-	instructor_id integer NOT NULL,
-	year integer NOT NULL,
-	semester integer NOT NULL,
-	section integer NOT NULL,
-	slot_id integer NOT NULL,
+	course_id text  ,
+	instructor_id integer  ,
+	year integer  ,
+	semester integer  ,
+	section integer  ,
+	slot_id integer  ,
 	cgpa_cutoff real,
 	branch text,
 	
@@ -72,11 +72,11 @@ CREATE TABLE CourseOfferings(
 );
 
 CREATE TABLE Grades(
-	course_id text NOT NULL,
-	student_id integer NOT NULL,
-	year integer NOT NULL,
-	semester integer NOT NULL,
-	grade integer NOT NULL,
+	course_id text  ,
+	student_id integer  ,
+	year integer  ,
+	semester integer  ,
+	grade integer  ,
 	
 	FOREIGN KEY(course_id) 
 	REFERENCES CourseCatalogue(course_id)
@@ -88,12 +88,12 @@ CREATE TABLE Grades(
 );
 
 CREATE TABLE StudentRegistrationTable(
-	student_id integer NOT NULL,
-	course_id text NOT NULL,
-	semester integer NOT NULL,
-	year integer NOT NULL,
-	section integer NOT NULL,
-	slot_id integer NOT NULL,
+	student_id integer  ,
+	course_id text  ,
+	semester integer  ,
+	year integer  ,
+	section integer  ,
+	slot_id integer  ,
 	
 	FOREIGN KEY(student_id) 
 	REFERENCES Students(student_id)
@@ -130,4 +130,3 @@ CREATE TABLE TicketTable(
 	REFERENCES CourseCatalogue(course_id)
 	ON DELETE CASCADE
 );
-
