@@ -1,4 +1,4 @@
-DROP FUNCTION Register;
+DROP FUNCTION IF EXISTS Register;
 
 CREATE OR REPLACE FUNCTION Register(
 	IN student_id_ integer,
@@ -6,20 +6,20 @@ CREATE OR REPLACE FUNCTION Register(
 	IN year_ integer,
 	IN semester_ integer,
 	IN section_ integer,
-	IN slot_ text
+	IN slot_id_ integer
 )
 
 RETURNS integer
 LANGUAGE plpgsql
 AS $$
 
-DECLARE count_rows integer;
+DECLARE 
+	count_rows integer;
 	count_prerequisites_passed integer;
 	count_total_prerequisites integer;
 	credits real;
 	this_course_credits real;
-	max_ticket_id integer default 0;
-		
+	
 BEGIN
 	--------------------------------------------------------------------
 	-- find the credits for input course_id
@@ -30,16 +30,16 @@ BEGIN
 	
 	--------------------------------------------------------------------
 	-- check this slot is already there in the StudentRegistration table
-	SELECT COUNT(srt.slot) FROM StudentRegistrationTable AS srt
+	SELECT COUNT(srt.slot_id) FROM StudentRegistrationTable AS srt
 	where srt.student_id = student_id_ 
 	and srt.year = year_ 
 	and srt.semester = semester_ 
-	and srt.slot = slot_ INTO count_rows;
+	and srt.slot_id = slot_id_ INTO count_rows;
 	--------------------------------------------------------------------
 	--------------------------------------------------------------------
 	-- check for credit limits
-	SELECT SUM(CourseCatalogue.C) FROM CourseCatalogue  
-		WHERE CourseCatalogue.course_id IN
+	SELECT SUM(cc.C) FROM CourseCatalogue as cc 
+		WHERE cc.course_id IN
 		(
 			SELECT srt.course_id FROM StudentRegistrationTable AS srt
 			where srt.student_id = student_id_ 
@@ -57,7 +57,7 @@ BEGIN
 	(
 		SELECT g.course_id FROM Grades AS g 
 		WHERE  g.student_id = student_id_ 
-			   and  g.grade >= 6  -- passing criterion
+			   and  g.grade >= 6  -- passing criteria
 	)
 	INTO count_prerequisites_passed;
 	
@@ -70,13 +70,9 @@ BEGIN
 	--------------------------------------------------------------------
 	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed
 		THEN RETURN 0;
-	ELSIF credits + this_course_credits > 5
+	ELSIF credits + this_course_credits > 18
 			THEN
-			
-			SELECT MAX(tt.ticket_id) FROM TicketTable as tt 
-			INTO max_ticket_id;
 			INSERT INTO TicketTable VALUES(
-				max_ticket_id + 1,
 				student_id_,
 				instructor_id, -- yet not found
 				semester_,
@@ -85,10 +81,28 @@ BEGIN
 				'Pending'
 			);
 			RETURN 0;
-
+	ELSE 
+		INSERT INTO StudentRegistrationTable VALUES(
+			 student_id_ ,
+			 course_id_,
+			 semester_,
+			 year_,
+			 section_,
+			 slot_id_ );
 	END IF;
 	--------------------------------------------------------------------
 	
-	RETURN count_rows;
+	RETURN 1;
 END;
 $$;
+
+
+-- TESTCASE
+INSERT INTO Students(student_name , year_joined) VALUES('Sangram',2019);
+INSERT INTO CourseCatalogue VALUES('CS201','DSA',1 , 2 , 3 ,4 ,1);
+INSERT INTO CourseCatalogue VALUES('CS202','DSA',1 , 2 , 3 ,4 ,1,'CS201');
+INSERT INTO TimeTableSlots(week_day , start_time , end_time) VALUES('Sunday', 12 ,1);
+
+SELECT Register(1 , 'CS201' , 1 , 2019 , 3,1);
+
+select * from studentRegistrationTable
