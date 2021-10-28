@@ -14,7 +14,7 @@ BEGIN
 			 OLD.semester,
 			 OLD.year,
 			 OLD.section,
-			 OLD.slot );
+			 OLD.slot_id );
 	ELSE
 		DELETE FROM TicketTable WHERE id = OLD.id;
 	
@@ -25,7 +25,6 @@ $$;
 
 ----------------------------------------------------------------------------
 CREATE TRIGGER RecordTicketTable
-	
 	AFTER UPDATE ON TicketTable
 	FOR EACH ROW
 	WHEN (NEW.status ='Accepted' OR NEW.status='Rejected' )
