@@ -1,3 +1,4 @@
+
 DROP FUNCTION IF EXISTS Register;
 
 CREATE OR REPLACE FUNCTION Register(
@@ -20,8 +21,23 @@ DECLARE
 	credits real;
 	this_course_credits real;
 	instructor_id integer;
+	branch integer;
 	
 BEGIN
+	--------------------------------------------------------------------
+	-- find if branch of student is present in the mentioned allowed branches
+	SELECT COUNT(S.branch) FROM Student S 
+	WHERE S.student_id = student_id_ 
+	and S.branch IN
+	(SELECT co.branch FROM CourseOffering 
+	 	WHERE co.course_id = course_id_
+		and   co.year = year_
+		and   co.semester = semester_
+		and   co.section = section_
+	)
+	INTO branch;
+	--------------------------------------------------------------------
+
 	--------------------------------------------------------------------
 	-- find the credits for input course_id
 	SELECT cc.C FROM CourseCatalogue as cc
@@ -82,7 +98,7 @@ BEGIN
 	--------------------------------------------------------------------
 	
 	--------------------------------------------------------------------
-	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed
+	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed OR branch = 0
 		THEN RETURN 0;
 	ELSIF credits + this_course_credits > 5
 			THEN
@@ -140,4 +156,3 @@ set status = 'Accepted' where ticket_id = 1
 
 select * from tickettable;
 select * from studentRegistrationtable
-
