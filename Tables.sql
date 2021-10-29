@@ -12,7 +12,8 @@ DROP TABLE IF EXISTS CourseOfferings CASCADE;
 CREATE TABLE Students(
 	student_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	student_name text ,
-	year_joined integer 
+	year_joined integer ,
+	branch text
 );
 
 CREATE TABLE Instructors(
