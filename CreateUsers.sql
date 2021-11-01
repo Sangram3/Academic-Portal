@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION CreateStudent(
 )
 RETURNS void
 LANGUAGE plpgsql
+SECURITY definer
 AS
 $$
 DECLARE S text;

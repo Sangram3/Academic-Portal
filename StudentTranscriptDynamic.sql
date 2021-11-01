@@ -4,6 +4,7 @@
 CREATE OR REPLACE FUNCTION CreateStudentTranscrptTable()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SECURITY definer
 AS $$
 DECLARE 
 S varchar;
@@ -16,7 +17,6 @@ S = CONCAT('CREATE TABLE IF NOT EXISTS StudentTranscript',
 		   
 EXECUTE S;
 RETURN NULL;
-
 END;
 $$;
 

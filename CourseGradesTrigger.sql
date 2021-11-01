@@ -15,6 +15,7 @@ RETURNS TABLE(
 	grade integer 
 )
 LANGUAGE plpgsql
+SECURITY definer
 AS
 $$
 	BEGIN
