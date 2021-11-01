@@ -1,8 +1,8 @@
-  -- create role  boys with user sangram,harsh,john;
--- grant boys to sangram;
--- GRANT SELECT 
--- ON gg 
--- TO boys;
+  create role  boys with user sangram,harsh,john;
+grant boys to sangram;
+GRANT SELECT 
+ON gg 
+TO boys;
 
 
 CREATE ROLE Students;
