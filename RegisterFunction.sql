@@ -1,4 +1,3 @@
-
 DROP FUNCTION IF EXISTS Register;
 
 CREATE OR REPLACE FUNCTION Register(
@@ -10,7 +9,7 @@ CREATE OR REPLACE FUNCTION Register(
 	IN slot_id_ integer
 )
 
-RETURNS integer
+RETURNS text
 LANGUAGE plpgsql
 SECURITY definer
 AS $$
@@ -23,14 +22,32 @@ DECLARE
 	this_course_credits real;
 	instructor_id integer;
 	branch integer;
+	my_cgpa real;
+	cgpa_cutoff real;
 	
 BEGIN
 	--------------------------------------------------------------------
+	-- cgpa
+	
+	SELECT Students.cgpa FROM Students
+	WHERE Students.student_id = student_id_
+	INTO my_cgpa;
+	
+	SELECT co.cgpa_cutoff FROM CourseOfferings AS co
+	 	WHERE co.course_id = course_id_
+		and   co.year = year_
+		and   co.semester = semester_
+		and   co.section = section_
+	
+	INTO cgpa_cutoff;
+	--------------------------------------------------------------------
+	
+	--------------------------------------------------------------------
 	-- find if branch of student is present in the mentioned allowed branches
-	SELECT COUNT(S.branch) FROM Student S 
+	SELECT COUNT(S.branch) FROM Students AS S 
 	WHERE S.student_id = student_id_ 
 	and S.branch IN
-	(SELECT co.branch FROM CourseOffering 
+	(SELECT co.branch FROM CourseOfferings AS co
 	 	WHERE co.course_id = course_id_
 		and   co.year = year_
 		and   co.semester = semester_
@@ -38,14 +55,12 @@ BEGIN
 	)
 	INTO branch;
 	--------------------------------------------------------------------
-
 	--------------------------------------------------------------------
 	-- find the credits for input course_id
 	SELECT cc.C FROM CourseCatalogue as cc
 	WHERE cc.course_id = course_id_
 	INTO this_course_credits;
 	--------------------------------------------------------------------
-	
 	--------------------------------------------------------------------
 	-- check this slot is already there in the StudentRegistration table
 	SELECT COUNT(srt.slot_id) FROM StudentRegistrationTable AS srt
@@ -66,7 +81,6 @@ BEGIN
 		) 
 		INTO credits;
 	--------------------------------------------------------------------
-	
 	--------------------------------------------------------------------
 	--counting total distinct prerequisites passed by the student 
 	SELECT COUNT(DISTINCT cc.prerequisite) FROM CourseCatalogue as cc
@@ -84,8 +98,6 @@ BEGIN
 	WHERE cc.course_id = course_id_ 
 	INTO count_total_prerequisites;
 	--------------------------------------------------------------------
-	
-	
 	--------------------------------------------------------------------
 	-- find instructor id who is offering thise course this year,semester,section
 	SElECT co.instructor_id FROM
@@ -95,12 +107,12 @@ BEGIN
 	and   co.semester = semester_
 	and   co.section = section_
 	INTO instructor_id;
-	
 	--------------------------------------------------------------------
-	
 	--------------------------------------------------------------------
-	IF count_rows = 1 OR count_total_prerequisites > count_prerequisites_passed OR branch = 0
-		THEN RETURN 0;
+	IF count_rows = 1 THEN RETURN 'Slot already occupied';
+	ELSIF count_total_prerequisites > count_prerequisites_passed THEN RETURN 'Prerequisite not passed';
+	ELSIF branch = 0 THEN RETURN 'Course not open for this branch';
+	ELSIF my_cgpa < cgpa_cutoff THEN RETURN 'CGPA cutoff not passed';
 	ELSIF credits + this_course_credits > 5
 			THEN
 			INSERT INTO 
@@ -115,7 +127,7 @@ BEGIN
 				slot_id_,
 				'Pending'
 			);
-			RETURN 0;
+			RETURN 'Ticket Generated';
 	ELSE 
 		INSERT INTO StudentRegistrationTable VALUES(
 			 student_id_ ,
@@ -126,34 +138,11 @@ BEGIN
 			 slot_id_ );
 	END IF;
 	--------------------------------------------------------------------
-	
-	RETURN 1;
+	RETURN 'Registered';
 END;
 $$;
 
 
 -- TESTCASE
-INSERT INTO Students(student_name , year_joined) VALUES('Sangram',2019);
-
-INSERT INTO CourseCatalogue VALUES('CS201','DSA',1 , 2 , 3 ,4 ,3);
-
-INSERT INTO CourseCatalogue VALUES('CS202','DSA',1 , 2 , 3 ,4 ,5);
-
-INSERT INTO Instructors(instructor_name) VALUES('Puneet Goyal');
-
-INSERT INTO TimeTableSlots(week_day , start_time , end_time) VALUES('Sunday', 12 ,1);
-
-INSERT INTO TimeTableSlots(week_day , start_time , end_time) VALUES('Sunday', 1 ,2);
-
-INSERT INTO CourseOfferings(course_id,instructor_id,year,semester,section,slot_id) 
-
-VALUES('CS202',1 , 2019 , 1 ,2 ,2);
-SELECT Register(1 , 'CS201' , 1 , 2019 , 3,1);
-
-SELECT Register(1 , 'CS202' , 1 , 2019 , 2,2);
-
-update tickettable
-set status = 'Accepted' where ticket_id = 1
-
-select * from tickettable;
-select * from studentRegistrationtable
+SELECT Register(1 , 'CS303'  , 2019 ,1 , 1 , 2); -- ticket generated
+INSERT INTO StudentRegistrationTable VALUES(1 , 'Dummy1' , 1 , 2019,1,3);
