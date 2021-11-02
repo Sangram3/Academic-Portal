@@ -1,5 +1,5 @@
 -- When there is update in ticket table trigger invokes this function
-
+----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION RegisterTicket()
 RETURNS TRIGGER 
 LANGUAGE plpgsql
@@ -8,7 +8,7 @@ AS
 $$
 
 BEGIN
-	IF NEW.status = 'Accepted' THEN
+	IF NEW.status = 'Accepted'  THEN
 		INSERT INTO StudentRegistrationTable VALUES(
 			 OLD.student_id ,
 			 OLD.course_id,
@@ -17,21 +17,13 @@ BEGIN
 			 OLD.section,
 			 OLD.slot_id );
 	ELSE
-		DELETE FROM TicketTable WHERE id = OLD.id;
+		DELETE FROM TicketTable ;
 	
 	END IF;
 	RETURN NEW;
 END;
 $$;
-
 ----------------------------------------------------------------------------
-CREATE TRIGGER RecordTicketTable
-	AFTER UPDATE ON TicketTable
-	FOR EACH ROW
-	WHEN ( (NEW.status ='Accepted' OR NEW.status='Rejected') AND NEW.DeanUpdate = 'YES' )
-	EXECUTE function RegisterTicket();
-----------------------------------------------------------------------------
-
 --Instructor Ticket Update
 CREATE OR REPLACE FUNCTION InstructorTicketUpdate(
 	IN ticket_id_ integer,
@@ -45,10 +37,11 @@ AS $$
 BEGIN 
 UPDATE TicketTable
 SET status = status_
-WHERE ticked_id = ticket_id_;
+WHERE ticket_id = ticket_id_;
 END;
 $$;
 
+----------------------------------------------------------------------------
 --BatchAdvisor Ticket Update
 CREATE OR REPLACE FUNCTION BATicketUpdate(
 	IN ticket_id_ integer,
@@ -62,11 +55,11 @@ AS $$
 BEGIN 
 UPDATE TicketTable
 SET status = status_
-WHERE ticked_id = ticket_id_;
+WHERE ticket_id = ticket_id_;
 END;
 $$;
 
-
+----------------------------------------------------------------------------
 --DeanFA Ticket Update
 CREATE OR REPLACE FUNCTION DeanFATicketUpdate(
 	IN ticket_id_ integer,
@@ -80,7 +73,17 @@ AS $$
 BEGIN 
 
 UPDATE TicketTable
-SET status = status_ , DeanUpdated = 'YES'
-WHERE ticked_id = ticket_id_;
+SET status = status_ , DeanUpdate = 'YES'
+WHERE ticket_id = ticket_id_;
 END;
 $$;
+
+----------------------------------------------------------------------------
+CREATE TRIGGER RecordTicketTable
+	AFTER UPDATE ON TicketTable
+	FOR EACH ROW
+	WHEN ( (NEW.status ='Accepted' OR NEW.status='Rejected') AND NEW.DeanUpdate = 'YES' )
+	EXECUTE function RegisterTicket();
+----------------------------------------------------------------------------
+
+
