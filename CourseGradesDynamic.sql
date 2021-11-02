@@ -25,3 +25,24 @@ CREATE TRIGGER CreateCourseGrades
 	AFTER INSERT ON CourseOfferings
 	FOR EACH ROW 
 	EXECUTE PROCEDURE CreateCourseGradesTable();
+
+
+
+CREATE OR REPLACE FUNCTION AddEntriesByCSVCourseGrade(
+	IN address text,
+	IN course_id_ text,
+	IN year_ integer,
+	IN semester_ integer,
+	IN section_ integer
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY definer
+AS
+$$
+DECLARE S varchar;
+	BEGIN	
+		EXECUTE format('COPY CourseGrades%sYear%sSemester%sSection%s FROM ''%s'' WITH(FORMAT CSV);',
+					   course_id_ , year_ , semester_,section_,address);
+	END;
+$$;
