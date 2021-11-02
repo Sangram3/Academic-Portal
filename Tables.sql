@@ -121,7 +121,7 @@ CREATE TABLE TicketTable(
 	section integer,
 	slot_id integer,
 	status text ,-- 'Accepted' , 'Pending' , 'Rejected' 
-	
+	DeanUpdate text,
 	FOREIGN KEY(student_id) 
 	REFERENCES Students(student_id)
 	ON DELETE CASCADE,
