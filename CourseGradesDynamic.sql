@@ -64,3 +64,4 @@ DECLARE S varchar;
 	END;
 $$;
 
+SElECT AddEntriesByCSVGrades('C:\Users\ACER\Desktop\Sem 5\CS 517\Labs\2019CSB1091_PA1\Grade.csv');
