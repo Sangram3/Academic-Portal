@@ -12,6 +12,7 @@ CREATE OR REPLACE FUNCTION Register(
 
 RETURNS integer
 LANGUAGE plpgsql
+SECURITY definer
 AS $$
 
 DECLARE 

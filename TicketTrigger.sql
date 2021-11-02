@@ -3,6 +3,7 @@
 CREATE OR REPLACE FUNCTION RegisterTicket()
 RETURNS TRIGGER 
 LANGUAGE plpgsql
+SECURITY definer
 AS
 $$
 

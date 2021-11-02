@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION CalculateCGPA(
 )
 RETURNS real
 LANGUAGE plpgsql
-
+SECURITY definer
 AS
 $$
 	DECLARE total_score real;

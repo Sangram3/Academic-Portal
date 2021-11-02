@@ -3,6 +3,7 @@
 CREATE OR REPLACE FUNCTION CreateCourseGradesTable()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SECURITY definer
 AS $$
 DECLARE 
 S varchar;
