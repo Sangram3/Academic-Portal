@@ -28,3 +28,18 @@ CREATE TRIGGER CreateStudentTranscript
 
 
 
+CREATE OR REPLACE FUNCTION StudentTranscriptUpdate(
+	IN student_id_ integer
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY definer
+AS
+$$
+DECLARE S varchar;
+	BEGIN	
+		EXECUTE FORMAT( 'INSERT INTO StudentTranscript%s SELECT g.course_id , g.grade FROM
+					   Grades as g WHERE g.student_id = %s' , student_id_ , student_id_);
+		
+	END;
+$$;
