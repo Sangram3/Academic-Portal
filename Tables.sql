@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS StudentRegistrationTable CASCADE;
 DROP TABLE IF EXISTS TicketTable CASCADE;
 DROP TABLE IF EXISTS Students CASCADE;
 DROP TABLE IF EXISTS Instructors CASCADE;
-DROP TABLE IF EXISTS FacultyAdvisors CASCADE;
+DROP TABLE IF EXISTS BatchAdvisors CASCADE;
 DROP TABLE IF EXISTS DeanFA CASCADE;
 DROP TABLE IF EXISTS TimeTableSlots CASCADE;
 DROP TABLE IF EXISTS CourseOfferings CASCADE;
@@ -13,7 +13,8 @@ CREATE TABLE Students(
 	student_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	student_name text ,
 	year_joined integer ,
-	branch text
+	branch text,
+	cgpa real
 );
 
 CREATE TABLE Instructors(
@@ -21,9 +22,9 @@ CREATE TABLE Instructors(
 	instructor_name text  
 );
 
-CREATE TABLE FacultyAdvisors(
-	fa_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	fa_name text  
+CREATE TABLE BatchAdvisors(
+	ba_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	ba_name text  
 );
 
 CREATE TABLE DeanFA(
@@ -110,7 +111,6 @@ CREATE TABLE StudentRegistrationTable(
 	
 );
 
-DROP TABLE IF EXISTS TicketTable CASCADE;
 CREATE TABLE TicketTable(
 	ticket_id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	student_id integer,
@@ -134,3 +134,4 @@ CREATE TABLE TicketTable(
 	REFERENCES CourseCatalogue(course_id)
 	ON DELETE CASCADE
 );
+-------------------------------------------------------------------------------------
