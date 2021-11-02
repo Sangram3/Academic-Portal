@@ -28,5 +28,59 @@ $$;
 CREATE TRIGGER RecordTicketTable
 	AFTER UPDATE ON TicketTable
 	FOR EACH ROW
-	WHEN (NEW.status ='Accepted' OR NEW.status='Rejected' )
+	WHEN ( (NEW.status ='Accepted' OR NEW.status='Rejected') AND NEW.DeanUpdate = 'YES' )
 	EXECUTE function RegisterTicket();
+----------------------------------------------------------------------------
+
+--Instructor Ticket Update
+CREATE OR REPLACE FUNCTION InstructorTicketUpdate(
+	IN ticket_id_ integer,
+	IN status_ text
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+
+AS $$
+BEGIN 
+UPDATE TicketTable
+SET status = status_
+WHERE ticked_id = ticket_id_;
+END;
+$$;
+
+--BatchAdvisor Ticket Update
+CREATE OR REPLACE FUNCTION BATicketUpdate(
+	IN ticket_id_ integer,
+	IN status_ text
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+
+AS $$
+BEGIN 
+UPDATE TicketTable
+SET status = status_
+WHERE ticked_id = ticket_id_;
+END;
+$$;
+
+
+--DeanFA Ticket Update
+CREATE OR REPLACE FUNCTION DeanFATicketUpdate(
+	IN ticket_id_ integer,
+	IN status_ text
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+
+AS $$
+BEGIN 
+
+UPDATE TicketTable
+SET status = status_ , DeanUpdated = 'YES'
+WHERE ticked_id = ticket_id_;
+END;
+$$;
