@@ -46,3 +46,21 @@ DECLARE S varchar;
 					   course_id_ , year_ , semester_,section_,address);
 	END;
 $$;
+
+
+
+CREATE OR REPLACE FUNCTION AddEntriesByCSVGrades(
+	IN address text
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY definer
+AS
+$$
+DECLARE S varchar;
+	BEGIN	
+		EXECUTE format('COPY Grades FROM ''%s'' WITH(FORMAT CSV);',
+					   address);
+	END;
+$$;
+
