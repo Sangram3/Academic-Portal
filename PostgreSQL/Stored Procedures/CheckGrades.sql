@@ -1,4 +1,4 @@
-
+	
 
 CREATE OR REPLACE FUNCTION CheckGrades(
 	IN student_id_ integer,
