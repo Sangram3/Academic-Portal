@@ -1,3 +1,5 @@
+-- Stored Procedure to create a new entry of the student.
+-- Given the name and password.
 CREATE OR REPLACE FUNCTION CreateStudent( 
 	IN name_ text,
 	IN password_ text
@@ -12,13 +14,11 @@ BEGIN
 	S = CONCAT('CREATE USER ',
 		   name_, ' WITH PASSWORD ' , '''  password_ ''' );
 	EXECUTE S;
-	S = CONCAT('GRANT Students TO ',name_);
+
+	S = CONCAT('GRANT Students TO ',name_); -- Give permission to access students table.
 	EXECUTE S;  
 END;
 $$
-
-
-
 
 
 CREATE OR REPLACE FUNCTION CreateFaculty( 

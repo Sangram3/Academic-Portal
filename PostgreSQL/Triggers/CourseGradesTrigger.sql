@@ -1,8 +1,6 @@
 -- When a certain course is offered then new table is created to store the grades of the students
 -- taking that course
 
-
-
 CREATE OR REPLACE FUNCTION AddEntriesByCsv(
 	IN address text
 )

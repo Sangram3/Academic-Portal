@@ -77,6 +77,7 @@ VALUES( 'CS302' , 3 , 2019, 1 , 1 , 3 , 0 , 'ME');
 
 INSERT INTO CourseOfferings(course_id , instructor_id ,year, semester, section , slot_id , cgpa_cutoff,branch )
 VALUES( 'Dummy1' , 3 , 2019, 1 , 1 , 3 , 0 , 'CSE');
+
 -- Batch Advisors
 
 INSERT INTO BatchAdvisors(ba_name)
@@ -88,7 +89,9 @@ VALUES('TV');
 INSERT INTO BatchAdvisors(ba_name)
 VALUES('Surjeet');
 
+
 -- Dean of Academics
+
 INSERT INTO DeanFA(dean_name)
 VALUES('Neeraj Goyal');
 

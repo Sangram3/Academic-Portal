@@ -1,5 +1,14 @@
 DROP FUNCTION IF EXISTS Register;
 
+
+-- Stored Procedure to execute the request made by the student for registering into a course.
+-- Performs various checks such as,
+-- 		1. CGPA Cutoff is cleared.
+--      2. Branch is allowed to take the course.
+--      3. Credits limits is not exceeded by the student. Ticket is generated in this case.
+--      4. Student is not registering for multiple courses in the same slot.
+--      5. Student has passed all the prerequisites to take this course.
+
 CREATE OR REPLACE FUNCTION Register(
 	IN student_id_ integer,
 	IN course_id_ text,
@@ -32,6 +41,7 @@ BEGIN
 	SELECT Students.cgpa FROM Students
 	WHERE Students.student_id = student_id_
 	INTO my_cgpa;
+	
 	
 	SELECT co.cgpa_cutoff FROM CourseOfferings AS co
 	 	WHERE co.course_id = course_id_
